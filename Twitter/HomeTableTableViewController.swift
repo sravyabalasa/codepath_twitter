@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AlamofireImage
 
 class HomeTableTableViewController: UITableViewController {
 
@@ -55,15 +56,9 @@ class HomeTableTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TweetCell", for:indexPath) as! TweetCell
 
         let user = tweetArray[indexPath.row]["user"] as! NSDictionary
-        cell.tweetText.text = user["name"] as? String
-
-        let imageURL = URL(string: (user["profile_image_url_https"] as? String)!)
-        let imageData = try? Data(contentsOf: imageURL!)
-        if (imageData != nil) {
-            cell.tweetImageView.image = UIImage(data:imageData!)
-        }
-
-        cell.tweetUsername.text = tweetArray[indexPath.row]["text"] as? String
+        cell.tweetUsername.text = user["name"] as? String
+        cell.tweetImageView.af_setImage(withURL: URL(string:user["profile_image_url_https"] as! String)!)
+        cell.tweetText.text = tweetArray[indexPath.row]["text"] as? String
         
         return cell
     }
