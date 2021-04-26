@@ -9,8 +9,7 @@
 import UIKit
 import BDBOAuth1Manager
 
-class TwitterAPICaller: BDBOAuth1SessionManager {    
-    static let client = TwitterAPICaller(baseURL: URL(string: "https://api.twitter.com"), consumerKey: "uFTmFW66AAMEUwx3rZlZDMSCf", consumerSecret: "LtlxIoQpBvHcqjpSMIA9Gs2E9wCJbr7xkx9EpSdBYoNedaZUgh")
+class TwitterAPICaller: BDBOAuth1SessionManager {
     var loginSuccess: (() -> ())?
     var loginFailure: ((Error) -> ())?
     
@@ -63,5 +62,36 @@ class TwitterAPICaller: BDBOAuth1SessionManager {
             failure(error)
         })
     }
+
+    func postTweet(tweetString: String, success: @escaping () -> (), failure: @escaping (Error) -> ()){
+        TwitterAPICaller.client?.post("https://api.twitter.com/1.1/statuses/update.json", parameters: ["status": tweetString], progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            success()
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            failure(error)
+        })
+    }
     
+    func favoriteTweet(tweetId: Int, success: @escaping () -> (), failure: @escaping (Error) -> ()){
+        TwitterAPICaller.client?.post("https://api.twitter.com/1.1/favorites/create.json", parameters: ["id": tweetId], progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            success()
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            failure(error)
+        })
+    }
+
+    func unfavoriteTweet(tweetId: Int, success: @escaping () -> (), failure: @escaping (Error) -> ()){
+        TwitterAPICaller.client?.post("https://api.twitter.com/1.1/favorites/destroy.json", parameters: ["id": tweetId], progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            success()
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            failure(error)
+        })
+    }
+    
+    func retweet(tweetId: Int, success: @escaping () -> (), failure: @escaping (Error) -> ()){
+        TwitterAPICaller.client?.post("https://api.twitter.com/1.1/statuses/retweet/\(tweetId).json", parameters: ["id": tweetId], progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            success()
+        }, failure: { (task: URLSessionDataTask?, error: Error) in
+            failure(error)
+        })
+    }
 }
